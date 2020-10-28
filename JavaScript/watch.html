@@ -17,15 +17,57 @@
     <button class="rest">重置</button>
 
     <script>
+      let stopWatch; //停止秒表
+      let count = 0; //秒计数
+
+
+      let startTime = Date.now();
+      count = Date.now() - startTime;
+
+      function watchRun(count){
+        let hours = Math.floor(count/3600);
+        let minutes = Math.floor((count/3600)/60);
+        let seconds = Math.floor(count%60);
+
+        let displayHours = (hours < 10) ? '0' + hours : hours;
+        let displayMinutes = (minutes < 10) ? '0' + minutes : minutes;
+        let displaySeconds = (seconds < 10) ? '0' + seconds : seconds;
+        let displayWatch = displayHours + ':' + displayMinutes + ':' + displaySeconds;
+        document.querySelector('.watch').textContent = displayWatch;
+        console.log(count);
+      }
+
+      //时钟
       function displayTime() {
         let date = new Date();
         let time = date.toLocaleTimeString();
-        let watchTime;
-
         document.querySelector('.clock').textContent = time;
       }
 
+
+      const startBtn = document.querySelector('.start');
+      const stopBtn = document.querySelector('.stop');
+      const restBtn = document.querySelector('.rest');
+
+      startBtn.addEventListener('click', () => {
+        stopWatch = setInterval(watchRun, 1000); //让stopWatch作为调用的标识符,停止秒表只需要清除interval
+        startBtn.disabled = true; //防止多次点击开始按钮
+      });
+
+      stopBtn.addEventListener('click', () => {
+        clearInterval(stopWatch);
+        startBtn.disabled = false;
+      });
+
+      restBtn.addEventListener('click', () => {
+        clearInterval(stopWatch);
+        startBtn.disabled = false;
+        count = 0;
+        watchRun();
+      });
+
       displayTime();
+      watchRun();
       const createClock = setInterval(displayTime, 1000);
     </script>
   </body>
