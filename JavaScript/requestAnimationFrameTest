@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <title>My test page</title>
+    <style>
+      html {
+  background-color: white;
+  height: 100%;
+}
+
+body {
+  height: inherit;
+  background-color:darksalmon;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+div {
+  display: inline-block;
+  font-size: 10rem;
+}
+    </style>
+  </head>
+  <body>
+    <div>↻</div>
+    <p>这是一个利用JS实现的旋转动画</p>
+    <button class="off">开始</button>
+  </body>
+
+  <script>
+    const spinner = document.querySelector('div');
+    let rotateCount = 0;
+    let rAF;
+    let startTime = null;
+
+    function draw(timestamp) {
+      if (!startTime) {
+      startTime = timestamp;
+    }
+
+      rotateCount = (timestamp - startTime) / 3; //开始旋转，旋转速度是（当前时间戳-开始时间戳）/ 3
+
+      //检查rotateCount的值是否超过359（因为一个正圆的度数为360）
+      if (rotateCount > 359){
+
+      //如果是，则将旋转速度与360取模，使得圆圈动画能以一个合理的低值连续运转（非必要）
+      rotateCount %= 360;
+
+    }
+      spinner.style.transform = `rotate(${rotateCount}deg)`;
+
+      //将定义的变量设置为以draw函数 为参数的活动requestAnimationFrame()调用
+      rAF = requestAnimationFrame(draw);
+
+}
+
+  let btn = document.querySelector('button');
+  btn.onclick = function(){
+    const btnClass = btn.getAttribute('class');
+    if(btnClass === 'off'){
+      btn.setAttribute('class', 'on');
+      btn.textContent = '停止';
+      draw();
+    }else{
+      btn.setAttribute('class', 'off');
+      btn.textContent = '开始';
+      cancelAnimationFrame(rAF);
+    }
+  }
+  </script>
+</html>
